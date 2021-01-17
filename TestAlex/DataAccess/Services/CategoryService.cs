@@ -11,38 +11,48 @@ namespace TestAlex.DataAccess.Services
 {
     public class CategoryService : ICRUDService<Category>
     {
-        private readonly DatabaseContext _databaseContext;
-        public CategoryService()
-        {
-            _databaseContext = new DatabaseContext();
-        }
         public async Task Create(Category entity)
         {
-            _databaseContext.Categories.Add(entity);
-            await _databaseContext.SaveChangesAsync();
+            using (var DBContext = new DatabaseContext())
+            {
+                DBContext.Categories.Add(entity);
+                await DBContext.SaveChangesAsync(); 
+            }
         }
 
         public async Task Delete(int id)
         {
-            var category = await _databaseContext.Categories.SingleAsync(category => category.Id == id);
-            _databaseContext.Categories.Remove(category);
-            await _databaseContext.SaveChangesAsync();
+            using (var DBContext = new DatabaseContext())
+            {
+                var category = await DBContext.Categories.SingleAsync(category => category.Id == id);
+                DBContext.Categories.Remove(category);
+                await DBContext.SaveChangesAsync(); 
+            }
         }
 
         public async Task<Category> Get(int id)
         {
-            return await _databaseContext.Categories.SingleAsync(category => category.Id == id);
+            using (var DBContext = new DatabaseContext())
+            {
+                return await DBContext.Categories.SingleAsync(category => category.Id == id); 
+            }
         }
 
         public async Task<IEnumerable<Category>> GetAll()
         {
-           return await _databaseContext.Categories.ToArrayAsync();
+            using (var DBContext = new DatabaseContext())
+            {
+                return await DBContext.Categories.ToArrayAsync(); 
+            }
         }
 
         public async Task Update(Category entity)
         {
-           _databaseContext.Categories.Update(entity);
-           await _databaseContext.SaveChangesAsync();
+            using (var DBContext = new DatabaseContext())
+            {
+                DBContext.Categories.Update(entity);
+                await DBContext.SaveChangesAsync(); 
+            }
         }
     }
 }
