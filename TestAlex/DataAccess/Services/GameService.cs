@@ -41,7 +41,7 @@ namespace TestAlex.DataAccess.Services
         {
             using (var DBContext = new DatabaseContext())
             {
-                return await DBContext.Games.ToArrayAsync();
+                return await DBContext.Games.Include(game => game.Category).ToArrayAsync();
             }
         }
 

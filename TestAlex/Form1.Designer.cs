@@ -39,6 +39,9 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.CategoriesDGV = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.DescriptionLabel = new System.Windows.Forms.Label();
+            this.EditGameButton = new System.Windows.Forms.Button();
+            this.DeleteGameButton = new System.Windows.Forms.Button();
             this.UploadButton = new System.Windows.Forms.Button();
             this.GamePictureBox = new System.Windows.Forms.PictureBox();
             this.GameCategoryComboBox = new System.Windows.Forms.ComboBox();
@@ -47,6 +50,7 @@
             this.Add = new System.Windows.Forms.Button();
             this.ShowAllGamesButton = new System.Windows.Forms.Button();
             this.GamesDGV = new System.Windows.Forms.DataGridView();
+            this.DescriptionRichTextBox = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CategoriesDGV)).BeginInit();
@@ -168,6 +172,10 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.DescriptionRichTextBox);
+            this.tabPage2.Controls.Add(this.DescriptionLabel);
+            this.tabPage2.Controls.Add(this.EditGameButton);
+            this.tabPage2.Controls.Add(this.DeleteGameButton);
             this.tabPage2.Controls.Add(this.UploadButton);
             this.tabPage2.Controls.Add(this.GamePictureBox);
             this.tabPage2.Controls.Add(this.GameCategoryComboBox);
@@ -184,11 +192,40 @@
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // DescriptionLabel
+            // 
+            this.DescriptionLabel.AutoSize = true;
+            this.DescriptionLabel.Location = new System.Drawing.Point(255, 335);
+            this.DescriptionLabel.Name = "DescriptionLabel";
+            this.DescriptionLabel.Size = new System.Drawing.Size(67, 15);
+            this.DescriptionLabel.TabIndex = 11;
+            this.DescriptionLabel.Text = "Description";
+            // 
+            // EditGameButton
+            // 
+            this.EditGameButton.Location = new System.Drawing.Point(138, 332);
+            this.EditGameButton.Name = "EditGameButton";
+            this.EditGameButton.Size = new System.Drawing.Size(75, 23);
+            this.EditGameButton.TabIndex = 9;
+            this.EditGameButton.Text = "Edit";
+            this.EditGameButton.UseVisualStyleBackColor = true;
+            this.EditGameButton.Click += new System.EventHandler(this.EditGameButton_Click);
+            // 
+            // DeleteGameButton
+            // 
+            this.DeleteGameButton.Location = new System.Drawing.Point(138, 380);
+            this.DeleteGameButton.Name = "DeleteGameButton";
+            this.DeleteGameButton.Size = new System.Drawing.Size(75, 23);
+            this.DeleteGameButton.TabIndex = 8;
+            this.DeleteGameButton.Text = "Delete";
+            this.DeleteGameButton.UseVisualStyleBackColor = true;
+            this.DeleteGameButton.Click += new System.EventHandler(this.DeleteGameButton_Click);
+            // 
             // UploadButton
             // 
-            this.UploadButton.Location = new System.Drawing.Point(684, 380);
+            this.UploadButton.Location = new System.Drawing.Point(633, 391);
             this.UploadButton.Name = "UploadButton";
-            this.UploadButton.Size = new System.Drawing.Size(100, 23);
+            this.UploadButton.Size = new System.Drawing.Size(151, 23);
             this.UploadButton.TabIndex = 7;
             this.UploadButton.Text = "Upload";
             this.UploadButton.UseVisualStyleBackColor = true;
@@ -196,9 +233,9 @@
             // 
             // GamePictureBox
             // 
-            this.GamePictureBox.Location = new System.Drawing.Point(684, 282);
+            this.GamePictureBox.Location = new System.Drawing.Point(633, 255);
             this.GamePictureBox.Name = "GamePictureBox";
-            this.GamePictureBox.Size = new System.Drawing.Size(100, 92);
+            this.GamePictureBox.Size = new System.Drawing.Size(151, 130);
             this.GamePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.GamePictureBox.TabIndex = 6;
             this.GamePictureBox.TabStop = false;
@@ -207,7 +244,7 @@
             // 
             this.GameCategoryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.GameCategoryComboBox.FormattingEnabled = true;
-            this.GameCategoryComboBox.Location = new System.Drawing.Point(506, 321);
+            this.GameCategoryComboBox.Location = new System.Drawing.Point(492, 282);
             this.GameCategoryComboBox.Name = "GameCategoryComboBox";
             this.GameCategoryComboBox.Size = new System.Drawing.Size(121, 23);
             this.GameCategoryComboBox.TabIndex = 5;
@@ -215,15 +252,15 @@
             // 
             // GameTextBox
             // 
-            this.GameTextBox.Location = new System.Drawing.Point(506, 283);
+            this.GameTextBox.Location = new System.Drawing.Point(341, 282);
             this.GameTextBox.Name = "GameTextBox";
-            this.GameTextBox.Size = new System.Drawing.Size(100, 23);
+            this.GameTextBox.Size = new System.Drawing.Size(131, 23);
             this.GameTextBox.TabIndex = 4;
             // 
             // GameLabel
             // 
             this.GameLabel.AutoSize = true;
-            this.GameLabel.Location = new System.Drawing.Point(416, 286);
+            this.GameLabel.Location = new System.Drawing.Point(251, 285);
             this.GameLabel.Name = "GameLabel";
             this.GameLabel.Size = new System.Drawing.Size(71, 15);
             this.GameLabel.TabIndex = 3;
@@ -231,7 +268,7 @@
             // 
             // Add
             // 
-            this.Add.Location = new System.Drawing.Point(313, 282);
+            this.Add.Location = new System.Drawing.Point(138, 282);
             this.Add.Name = "Add";
             this.Add.Size = new System.Drawing.Size(75, 23);
             this.Add.TabIndex = 2;
@@ -253,6 +290,7 @@
             // 
             this.GamesDGV.AllowUserToAddRows = false;
             this.GamesDGV.AllowUserToDeleteRows = false;
+            this.GamesDGV.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.GamesDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.GamesDGV.Location = new System.Drawing.Point(3, 0);
             this.GamesDGV.MultiSelect = false;
@@ -264,6 +302,15 @@
             this.GamesDGV.Text = "dataGridView2";
             this.GamesDGV.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GamesDGV_CellContentClick);
             this.GamesDGV.SelectionChanged += new System.EventHandler(this.GamesDGV_SelectionChanged);
+            // 
+            // DescriptionRichTextBox
+            // 
+            this.DescriptionRichTextBox.Location = new System.Drawing.Point(341, 332);
+            this.DescriptionRichTextBox.Name = "DescriptionRichTextBox";
+            this.DescriptionRichTextBox.Size = new System.Drawing.Size(272, 71);
+            this.DescriptionRichTextBox.TabIndex = 12;
+            this.DescriptionRichTextBox.Text = "";
+            this.DescriptionRichTextBox.TextChanged += new System.EventHandler(this.DescriptionRichTextBox_TextChanged);
             // 
             // Form1
             // 
@@ -306,6 +353,10 @@
         private System.Windows.Forms.ComboBox GameCategoryComboBox;
         private System.Windows.Forms.Button UploadButton;
         private System.Windows.Forms.PictureBox GamePictureBox;
+        private System.Windows.Forms.Button DeleteGameButton;
+        private System.Windows.Forms.Button EditGameButton;
+        private System.Windows.Forms.Label DescriptionLabel;
+        private System.Windows.Forms.RichTextBox DescriptionRichTextBox;
     }
 }
 

@@ -68,16 +68,30 @@ namespace TestAlex
         private async void RefreshCategories()
         {
             var ViewModels = new List<CategoryViewModel>();
+            int count = 0;
+
             foreach (var category in await _categoryService.GetAll())
             {
+                count = await GetCountGames(category.Id);
                 ViewModels.Add(new CategoryViewModel
                 {
                     Name = category.Name,
-                    Count = category.Games == null ? 0 : category.Games.Count,
+                    Count = count,
                     Id = category.Id
                 });
             }
             CategoriesDGV.DataSource = ViewModels;
+        }
+
+        private async Task<int> GetCountGames(int categoryId)
+        {
+            int count = 0;
+            foreach (var game in await _gameService.GetAll())
+            {
+                if (game.CategoryId == categoryId)
+                    count++;
+            }
+            return count;
         }
 
         private async void RefreshGames()
@@ -91,9 +105,10 @@ namespace TestAlex
                 var gameViewModel = new GameViewModel
                 {
                     Name = game.Name,
-                    CategoryId = (GameCategoryComboBox.SelectedItem as Category).Id,
+                    CategoryId = game.CategoryId,
                     Id = game.Id,
                     Description = game.Description,
+                    CategoryName = game.Category.Name
                 };
                 using (var ms = new MemoryStream(game.Logo))
                 {
@@ -106,6 +121,12 @@ namespace TestAlex
 
         private async void EditCategoryButton_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                MessageBox.Show("Category name must be fill!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             DialogResult result = MessageBox.Show($"Do you really want to edit {category.Name}?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (category != null && result == DialogResult.Yes)
             {
@@ -132,6 +153,12 @@ namespace TestAlex
 
         private async void DeleteCategoryButton_Click(object sender, EventArgs e)
         {
+            if(category.Count > 0)
+            {
+                MessageBox.Show("Category have link to game!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             DialogResult result = MessageBox.Show($"Do you really want to delete {category.Name}?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (category != null && result == DialogResult.Yes)
             {
@@ -175,15 +202,30 @@ namespace TestAlex
             if(game != null)
             {
                 GamePictureBox.Image = game.Logo;
+                SetCategoryNameInComboBox(game.CategoryName);
+                GameTextBox.Text = game.Name;
+                DescriptionRichTextBox.Text = game.Description;
             }
+        }
+
+        private void SetCategoryNameInComboBox(string categoryName)
+        {
+                GameCategoryComboBox.SelectedIndex = GameCategoryComboBox.FindStringExact(categoryName);
         }
 
         private async void Add_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(GameTextBox.Text))
+            {
+                MessageBox.Show("Game name must be fill!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var addGame = new Game()
             {
                 CategoryId = (GameCategoryComboBox.SelectedItem as Category).Id,
                 Name = GameTextBox.Text,
+                Description = DescriptionRichTextBox.Text,
             };
 
             using (var ms = new MemoryStream())
@@ -193,6 +235,54 @@ namespace TestAlex
             }
             await _gameService.Create(addGame);
             RefreshGames();
+        }
+
+        private async void DeleteGameButton_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show($"Do you really want to delete {game.Name}?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (game != null && result == DialogResult.Yes)
+            {
+                await _gameService.Delete(game.Id);
+                RefreshGames();
+            }
+        }
+
+        private async void EditGameButton_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show($"Do you really want to edit {game.Name}?", "Warning!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (game != null && result == DialogResult.Yes)
+            {
+                if (string.IsNullOrWhiteSpace(GameTextBox.Text))
+                {
+                    MessageBox.Show("Game name must be fill!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                game.Name = GameTextBox.Text;
+                Game editGame = new Game()
+                {
+                    Name = GameTextBox.Text,
+                    Id = game.Id,
+                    CategoryId = game.CategoryId,
+                    Description = DescriptionRichTextBox.Text,
+                    Category = GameCategoryComboBox.SelectedItem as Category
+
+                };
+
+                using (var ms = new MemoryStream())
+                {
+                    GamePictureBox.Image.Save(ms, GamePictureBox.Image.RawFormat);
+                    editGame.Logo = ms.GetBuffer();
+                }
+
+                await _gameService.Update(editGame);
+                RefreshGames();
+            }
+        }
+
+        private void DescriptionRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
