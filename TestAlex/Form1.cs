@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TestAlex.AutoMapper;
 using TestAlex.DataAccess.Entities;
 using TestAlex.DataAccess.Services;
 using TestAlex.Viewmodels;
@@ -67,18 +68,11 @@ namespace TestAlex
 
         private async void RefreshCategories()
         {
-            var ViewModels = new List<CategoryViewModel>();
-            int count = 0;
+            var ViewModels = MapperFactory.GetMapper().Map<List<CategoryViewModel>>(await _categoryService.GetAll());
 
-            foreach (var category in await _categoryService.GetAll())
+            foreach (var category in ViewModels)
             {
-                count = await GetCountGames(category.Id);
-                ViewModels.Add(new CategoryViewModel
-                {
-                    Name = category.Name,
-                    Count = count,
-                    Id = category.Id
-                });
+                category.Count = await GetCountGames(category.Id);
             }
             CategoriesDGV.DataSource = ViewModels;
         }
@@ -99,23 +93,8 @@ namespace TestAlex
             GameCategoryComboBox.DataSource = await _categoryService.GetAll();
             GameCategoryComboBox.DisplayMember = "Name";
 
-            var ViewModels = new List<GameViewModel>();
-            foreach (var game in await _gameService.GetAll())
-            {
-                var gameViewModel = new GameViewModel
-                {
-                    Name = game.Name,
-                    CategoryId = game.CategoryId,
-                    Id = game.Id,
-                    Description = game.Description,
-                    CategoryName = game.Category.Name
-                };
-                using (var ms = new MemoryStream(game.Logo))
-                {
-                    gameViewModel.Logo = Image.FromStream(ms);
-                }
-                ViewModels.Add(gameViewModel);
-            }
+            var ViewModels = MapperFactory.GetMapper().Map<List<GameViewModel>>(await _gameService.GetAll());
+
             GamesDGV.DataSource = ViewModels;
         }
 
